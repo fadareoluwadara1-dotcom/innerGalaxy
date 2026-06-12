@@ -1,35 +1,589 @@
-
 <!DOCTYPE html>
 <html lang="en">
-<head>
+  <head>
+    <title>coderunner</title>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="A simple digital marketing file.">
-    <meta name="author" content="Dara Fadare">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
-
-    <!--trying a star favicon-->
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 576 512'><path fill='green' d='M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z'/></svg>">
-<!--if it fails, replace it-->
-<!--it worked flawlessly-->
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
     
-    <title>Digital Sales</title>
+    <script src="https://cdn.jsdelivr.net/npm/appwrite@14.0.0"></script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23800080'><path d='M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279-7.416-3.967-7.417 3.967 1.481-8.279-6.064-5.828 8.332-1.151z'/></svg>">
+
+  </head>
+  <body>
     <style>
-        body {
-            font-family: sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            background-color: #f4f4f4;
-        }
-        h1 {
-            color: #333;
-        }
+       /* Basic Reset */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+      body{
+        overflow: hidden;
+        font-family:Arial,Sans-Serif;
+        padding: 20px;
+        line-height: 1.6;background: #000; color: white;
+      }
+      
+      /* Structure */
+#container { height: 100vh; width: 100vw; position: relative; }
+#track { height: 100%; transition: transform 0.8s cubic-bezier(0.65, 0, 0.35, 1); will-change: transform; }
+
+.slide { 
+  height: 100vh; width: 100vw; position: relative; 
+  overflow: hidden; display: flex; align-items: center; justify-content: center;
+}
+
+/* Layers */
+.bg, .shapes, .content { 
+  position: absolute; width: 100%; height: 100%; 
+  transition: transform 0.8s cubic-bezier(0.65, 0, 0.35, 1); 
+  will-change: transform;
+}
+
+.no-transition { transition: none !important; }
+
+/* Styling elements */
+.bg { background: linear-gradient(45deg, #1a1a1a, #333); z-index: 1; }
+.content { z-index: 3; display: flex; flex-direction: column; align-items: center; justify-content: center; pointer-events: none; }
+.headline { font-size: 4rem; margin: 1rem 0; }
+.eyebrow { text-transform: uppercase; letter-spacing: 2px; color: #888; }
+
+/* Dots & UI */
+#dots { position: fixed; right: 20px; top: 50%; transform: translateY(-50%); z-index: 10; }
+.dot { display: block; width: 12px; height: 12px; border-radius: 50%; background: #555; margin: 10px 0; border: none; cursor: pointer; transition: background 0.3s; }
+.dot.active { background: white; }
+
+#progress { position: fixed; top: 0; left: 0; height: 4px; background: #007bff; transition: width 0.8s; z-index: 10; }
+
+#hint { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); z-index: 10; opacity: 1; transition: opacity 0.5s; }
+#hint.hidden { opacity: 0; }
+
+ #app-container { border: 2px solid black; padding: 20px; width: 300px;
+ pointer-events: all; }
+        input { display: block; width: 100%; margin: 10px 0; padding: 8px; }
+        button { background: black; color: white; border: none; padding: 10px; width: 100%; cursor: pointer; }
+        .hidden { display: none; }
+
+.bg video{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  opacity:0;
+  transition:opacity .8s ease;
+}
+
+.bg video.active{ opacity:1; }
+
+
+
+.uploader{
+  position:fixed;
+  bottom:20px;
+  left:20px;
+  z-index:9999;
+  background:rgba(0,0,0,.75);
+  padding:12px;
+  border-radius:10px;
+  min-width:280px;
+}
+
+.uploader input{ color:white; margin-bottom:8px; display:block; }
+
+.btn-row{ display:flex; gap:8px; flex-wrap:wrap; }
+
+.btn{
+  border:none;
+  padding:7px 12px;
+  border-radius:5px;
+  cursor:pointer;
+  font-weight:bold;
+}
+
+.btn-upload{ background:#00e676; color:#000; }
+.btn-delete{ background:red; color:white; }
+.btn:disabled{ opacity:.5; cursor:not-allowed; }
+
+#progress-wrap{
+  margin-top:8px;
+  height:6px;
+  background:rgba(255,255,255,.15);
+  border-radius:4px;
+  display:none;
+}
+
+#progress-bar{
+  height:100%;
+  width:0%;
+  background:#00e676;
+  border-radius:4px;
+  transition:width .1s linear;
+}
+
+#upload-status{
+  color:white;
+  font-size:11px;
+  margin-top:5px;
+  display:none;
+}
+
+#speed-status{
+  color:#aaa;
+  font-size:10px;
+  margin-top:3px;
+  display:none;
+}
     </style>
-</head>
-<body>
-    <h1>Hello, World!</h1>
-</body>
-</html>
+    
+    <main>
+      <div id="container">
+  <div id="track">
+
+    <!-- SLIDE 1 -->
+    <div class="slide slide-1">
+      <div id="bg-1" class="bg"></div>
+      <div class="shapes">
+        <div class="shape shape-a"></div>
+        <div class="shape shape-b"></div>
+      </div>
+      <div class="content">
+        <p class="eyebrow">Welcome</p>
+        <h1 class="headline">Section One</h1>
+        <p class="sub">A strong parallax experience — each layer moves at its own pace as you swipe or scroll.</p>
+      </div>
+    </div>
+
+    <!-- SLIDE 2 -->
+    <div class="slide slide-2">
+      <div class="bg"></div>
+      <div class="shapes">
+        <div class="shape shape-a"></div>
+        <div class="shape shape-b"></div>
+      </div>
+      <div class="content">
+        <p class="eyebrow">Chapter II</p>
+        <h1 class="headline">Section Two</h1>
+        <p class="sub">Background, shapes, and text shift at different depths — creating real visual motion.</p>
+      </div>
+    </div>
+
+    <!-- SLIDE 3 -->
+    <div class="slide slide-3">
+      <div class="bg"></div>
+      <div class="shapes">
+        <div class="shape shape-a"></div>
+        <div class="shape shape-b"></div>
+      </div>
+      <div class="content">
+        <p class="eyebrow">Chapter III</p>
+        <h1 class="headline">Section Three</h1>
+        <p class="sub">Swipe up or down, scroll, or click the dots — everything stays in sync.</p>
+      </div>
+    </div>
+
+    <!-- SLIDE 4 -->
+    <div class="slide slide-4">
+      <div class="bg"></div>
+      <div class="shapes">
+        <div class="shape shape-a"></div>
+        <div class="shape shape-b"></div>
+      </div>
+      <div class="content">
+        <p class="eyebrow">Finale</p>
+<!--100-->
+<div id="app-container">
+    <div id="auth-section">
+        <h2>Login</h2>
+        <input type="email" id="email" placeholder="Email">
+        <input type="password" id="password" placeholder="Password">
+        <button onclick="login()">Enter</button>
+    </div>
+
+    <div id="protected-section" class="hidden">
+        <h1>Welcome!</h1>
+        <p>You are now inside the protected zone.</p>
+        <div class="uploader">
+  <input type="file" id="videoInput" accept="video/*">
+
+  <div class="btn-row">
+    <button class="btn btn-upload" id="uploadBtn" onclick="uploadVideo()">Upload Video</button>
+    <button class="btn btn-delete" id="deleteBtn" onclick="deleteCurrentVideo()">Delete Current</button>
+  </div>
+
+  <div id="progress-wrap"><div id="progress-bar"></div></div>
+  <div id="upload-status"></div>
+  <div id="speed-status"></div>
+</div>
+
+
+        <button onclick="logout()">Logout</button>
+    </div>
+</div>
+<!--200-->
+      </div>
+    </div>
+
+  </div><!-- /track -->
+</div><!-- /container -->
+
+<!-- NAV DOTS -->
+<nav id="dots"></nav>
+
+<!-- HINT -->
+<div id="hint">
+  <span>Scroll</span>
+  <div class="arrow"></div>
+</div>
+
+<!-- PROGRESS -->
+<div id="progress"></div>
+    </main>
+    
+    <script>
+       const SLIDES   = document.querySelectorAll('.slide');
+  const TRACK    = document.getElementById('track');
+  const DOTS_NAV = document.getElementById('dots');
+  const HINT     = document.getElementById('hint');
+  const PROGRESS = document.getElementById('progress');
+  const N        = SLIDES.length;
+
+  // Parallax speeds relative to slide travel (0 = stuck, 1 = same as slide)
+  const SPEED_BG     = 0.35;   // moves least  → deepest
+  const SPEED_SHAPES = 0.60;   // mid
+  const SPEED_TEXT   = 0.85;   // moves most   → closest
+
+  let current  = 0;
+  let animating = false;
+
+  /* ── BUILD DOTS ── */
+  const dots = [];
+  SLIDES.forEach((_, i) => {
+    const d = document.createElement('button');
+    d.className = 'dot' + (i === 0 ? ' active' : '');
+    d.setAttribute('aria-label', `Go to section ${i + 1}`);
+    d.addEventListener('click', () => goTo(i));
+    DOTS_NAV.appendChild(d);
+    dots.push(d);
+  });
+
+  /* ── PARALLAX APPLY ── */
+  function applyParallax(targetIndex, noTransition = false) {
+    SLIDES.forEach((slide, i) => {
+      const bg     = slide.querySelector('.bg');
+      const shapes = slide.querySelector('.shapes');
+      const text   = slide.querySelector('.content');
+
+      const delta = (i - targetIndex) * 100; // % of viewport
+
+      const toggleT = el => {
+        if (noTransition) el.classList.add('no-transition');
+        else              el.classList.remove('no-transition');
+      };
+
+      toggleT(bg);     toggleT(shapes);     toggleT(text);
+      if (noTransition) {
+        // force reflow
+        bg.offsetHeight; shapes.offsetHeight; text.offsetHeight;
+      }
+
+      bg.style.transform     = `translateY(${delta * SPEED_BG}%)`;
+      shapes.style.transform = `translateY(${delta * SPEED_SHAPES}%)`;
+      text.style.transform   = `translateY(${delta * SPEED_TEXT}%)`;
+    });
+  }
+
+  /* ── SLIDE TRACK ── */
+  function applyTrack(targetIndex, noTransition = false) {
+    if (noTransition) TRACK.classList.add('no-transition');
+    else              TRACK.classList.remove('no-transition');
+    if (noTransition) TRACK.offsetHeight; // reflow
+    TRACK.style.transform = `translateY(${-targetIndex * 100}vh)`;
+  }
+
+  /* ── GO TO SLIDE ── */
+  function goTo(index, noTransition = false) {
+    if (index < 0 || index >= N) return;
+    if (animating && !noTransition) return;
+
+    animating = true;
+    current   = index;
+
+    applyTrack(current, noTransition);
+    applyParallax(current, noTransition);
+
+    // Update dots
+    dots.forEach((d, i) => d.classList.toggle('active', i === current));
+
+    // Progress bar
+    PROGRESS.style.width = `${(current / (N - 1)) * 100}%`;
+
+    // Hide hint after first move
+    if (current > 0) HINT.classList.add('hidden');
+
+    // Unlock after transition
+    if (noTransition) {
+      animating = false;
+    } else {
+      setTimeout(() => { animating = false; }, 950);
+    }
+  }
+
+  /* ── INIT ── */
+  TRACK.style.height = `${N * 100}vh`;
+  goTo(0, true);
+
+  /* ── WHEEL ── */
+  let wheelCooldown = false;
+  window.addEventListener('wheel', e => {
+    if (wheelCooldown || animating) return;
+    wheelCooldown = true;
+    goTo(current + (e.deltaY > 0 ? 1 : -1));
+    setTimeout(() => { wheelCooldown = false; }, 1000);
+  }, { passive: true });
+
+  /* ── TOUCH ── */
+  let touchStartY = null;
+  window.addEventListener('touchstart', e => {
+    touchStartY = e.touches[0].clientY;
+  }, { passive: true });
+
+  window.addEventListener('touchend', e => {
+    if (touchStartY === null) return;
+    const diff = touchStartY - e.changedTouches[0].clientY;
+    if (Math.abs(diff) > 40) goTo(current + (diff > 0 ? 1 : -1));
+    touchStartY = null;
+  }, { passive: true });
+
+  /* ── KEYBOARD ── */
+  window.addEventListener('keydown', e => {
+    if (e.key === 'ArrowDown' || e.key === 'PageDown') goTo(current + 1);
+    if (e.key === 'ArrowUp'   || e.key === 'PageUp')   goTo(current - 1);
+  });
+  
+  const { Client, Account } = Appwrite;
+    const client = new Client()
+        .setEndpoint('https://cloud.appwrite.io/v1') 
+        .setProject('69dcc1130007792865b4'); // Replace with your Project ID
+
+    const account = new Account(client);
+
+    async function login() {
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+
+        try {
+            await account.createEmailPasswordSession(email, password);
+            showProtected();
+        } catch (error) {
+            alert("Not assigned: " + error.message);
+        }
+    }
+
+    function showProtected() {
+        document.getElementById('auth-section').classList.add('hidden');
+        document.getElementById('protected-section').classList.remove('hidden');
+    }
+
+    async function logout() {
+        await account.deleteSession('current');
+        location.reload(); // Reset page
+    }
+    
+    const SUPABASE_URL = "https://kvozhxngadxebclfpcpx.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt2b3poeG5nYWR4ZWJjbGZwY3B4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwODIwNDQsImV4cCI6MjA5NjY1ODA0NH0.861nCCV3sCj3uu6UIN0lCXQYE5-cWn5agSjfxU7OJNc";
+
+const BUCKET_NAME = "media";
+const VIDEO_FOLDER = "videos";
+const FIXED_FILE = `${VIDEO_FOLDER}/current-video.mp4`;
+
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+let currentVideoPath = null;
+
+/* ── UI ── */
+function setProgress(pct, color="#00e676"){
+  document.getElementById("progress-wrap").style.display = "block";
+  const bar = document.getElementById("progress-bar");
+  bar.style.width = pct + "%";
+  bar.style.background = color;
+}
+
+function setStatus(text, color="white"){
+  const el = document.getElementById("upload-status");
+  el.style.display = "block";
+  el.style.color = color;
+  el.textContent = text;
+}
+
+function setSpeed(text){
+  const el = document.getElementById("speed-status");
+  el.style.display = text ? "block" : "none";
+  el.textContent = text;
+}
+
+function resetProgress(){
+  setTimeout(() => {
+    document.getElementById("progress-wrap").style.display = "none";
+    document.getElementById("upload-status").style.display = "none";
+    document.getElementById("speed-status").style.display = "none";
+    document.getElementById("progress-bar").style.width = "0%";
+  }, 2000);
+}
+
+function lockButtons(state){
+  document.getElementById("uploadBtn").disabled = state;
+  document.getElementById("deleteBtn").disabled = state;
+}
+
+/* ── VIDEO SWAP ── */
+function swapVideo(src){
+  const bg = document.getElementById("bg-1");
+
+  const video = document.createElement("video");
+  video.src = src;
+  video.autoplay = true;
+  video.muted = true;
+  video.loop = true;
+  video.playsInline = true;
+  video.preload = "auto";
+
+  video.addEventListener("loadeddata", () => {
+    bg.appendChild(video);
+    requestAnimationFrame(() => video.classList.add("active"));
+
+    bg.querySelectorAll("video:not(:last-child)").forEach(v => {
+      v.style.opacity = "0";
+      setTimeout(() => v.remove(), 800);
+    });
+
+    video.play().catch(()=>{});
+  });
+
+  // If the video src is bad (no file in bucket), silently do nothing
+  video.addEventListener("error", () => {
+    console.log("No persistent video found in bucket.");
+  });
+}
+
+/* ── XHR UPLOAD ── */
+function xhrUpload(url, file, onProgress){
+  return new Promise((resolve, reject) => {
+
+    const xhr = new XMLHttpRequest();
+    const start = Date.now();
+
+    xhr.upload.onprogress = (e) => {
+      if(!e.lengthComputable) return;
+
+      const pct = Math.round((e.loaded / e.total) * 100);
+      const sec = (Date.now() - start) / 1000;
+      const speed = (e.loaded / 1024 / 1024 / sec).toFixed(1);
+      const remain = ((e.total - e.loaded) / 1024 / 1024).toFixed(1);
+
+      onProgress(pct, speed, remain);
+    };
+
+    xhr.onload = () => {
+      if(xhr.status >= 200 && xhr.status < 300) resolve();
+      else reject(new Error(xhr.responseText));
+    };
+
+    xhr.onerror = () => reject(new Error("Network error"));
+
+    xhr.open("PUT", url);
+    xhr.setRequestHeader("Authorization", `Bearer ${SUPABASE_ANON_KEY}`);
+    xhr.setRequestHeader("x-upsert", "true");
+    xhr.setRequestHeader("Content-Type", file.type || "video/mp4");
+
+    xhr.send(file);
+  });
+}
+
+/* ── LOAD PERSISTENT VIDEO ── */
+function loadLatestVideo(){
+  // Get the public URL and pass it directly to swapVideo.
+  // swapVideo's onerror handler will silently catch it if the file doesn't exist yet.
+  const { data } = sb.storage.from(BUCKET_NAME).getPublicUrl(FIXED_FILE);
+
+  currentVideoPath = FIXED_FILE;
+  swapVideo(`${data.publicUrl}?t=${Date.now()}`);
+}
+
+/* ── UPLOAD ── */
+async function uploadVideo(){
+
+  const file = document.getElementById("videoInput").files[0];
+  if(!file) return alert("Select a video");
+
+  lockButtons(true);
+
+  swapVideo(URL.createObjectURL(file));
+
+  setStatus(`Uploading ${file.size/1024/1024 | 0}MB...`);
+  setProgress(1);
+
+  const uploadUrl =
+    `${SUPABASE_URL}/storage/v1/object/${BUCKET_NAME}/${FIXED_FILE}`;
+
+  try{
+
+    await xhrUpload(uploadUrl, file, (p,s,r)=>{
+      setProgress(p);
+      setStatus(`Uploading ${p}%`);
+      setSpeed(`${s}MB/s · ${r}MB left`);
+    });
+
+    currentVideoPath = FIXED_FILE;
+
+    setProgress(100);
+    setStatus("Upload complete ✓", "#00e676");
+    setSpeed("");
+
+    document.getElementById("videoInput").value = "";
+
+    resetProgress();
+
+    const { data } =
+      sb.storage.from(BUCKET_NAME).getPublicUrl(FIXED_FILE);
+
+    swapVideo(`${data.publicUrl}?t=${Date.now()}`);
+
+  }catch(err){
+    setProgress(100, "red");
+    setStatus(err.message, "#ff5252");
+    setSpeed("");
+  }
+
+  lockButtons(false);
+}
+
+/* ── DELETE ── */
+async function deleteCurrentVideo(){
+
+  if(!currentVideoPath) return alert("No video");
+
+  lockButtons(true);
+
+  const { error } =
+    await sb.storage.from(BUCKET_NAME).remove([FIXED_FILE]);
+
+  if(error){
+    alert(error.message);
+    lockButtons(false);
+    return;
+  }
+
+  document.getElementById("bg-1").innerHTML = "";
+  currentVideoPath = null;
+
+  alert("Deleted");
+
+  lockButtons(false);
+}
+
+window.addEventListener("load", loadLatestVideo);
+
+
+    </script>
+  </body>
+    </html>
