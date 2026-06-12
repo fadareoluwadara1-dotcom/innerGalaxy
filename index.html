@@ -43,7 +43,7 @@
 
 /* Styling elements */
 .bg { background: linear-gradient(45deg, #1a1a1a, #333); z-index: 1; }
-.content { z-index: 3; display: flex; flex-direction: column; align-items: center; justify-content: center; pointer-events: none; }
+.content { z-index: 3; display: flex; flex-direction: column; align-items: center; justify-content: center; pointer-events:all; }
 .headline { font-size: 4rem; margin: 1rem 0; }
 .eyebrow { text-transform: uppercase; letter-spacing: 2px; color: #888; }
 
@@ -133,6 +133,141 @@
   margin-top:3px;
   display:none;
 }
+/* Wrap all four slots in a container with this class */
+.slots-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 0;
+  width: fit-content;
+  margin: 0 auto;
+  border: 1px solid #555;
+}
+
+[class^="slot-"] {
+  padding: 12px;
+  border: 1px solid #555;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+[class^="slot-"] img {
+  width: 100%;
+  max-width: 120px;
+  height: 90px;
+  object-fit: cover;
+  display: block;
+}
+.image-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+    gap:10px;
+}
+/* ── Main Button Wrap ── */
+.main-btn-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+}
+
+/* ── Main Button ── */
+.main-btn {
+  width: 100%;
+  padding: 10px 14px;
+  background: #1a1a2e;
+  color: #e0e0ff;
+  border: 1.5px solid #4444aa;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  letter-spacing: 0.5px;
+  transition: background 0.2s, border-color 0.2s;
+  text-align: center;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.main-btn:hover {
+  background: #22224a;
+  border-color: #6666cc;
+}
+
+.main-btn.has-link {
+  background: #0d2b0d;
+  border-color: #33aa33;
+  color: #aaffaa;
+}
+
+/* ── Sub Buttons Row ── */
+.sub-btns {
+  display: flex;
+  gap: 5px;
+  width: 100%;
+  justify-content: center;
+}
+
+.sub-btn {
+  padding: 4px 10px;
+  border: none;
+  border-radius: 5px;
+  font-size: 10px;
+  font-weight: 700;
+  cursor: pointer;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  transition: opacity 0.2s, transform 0.1s;
+}
+
+.sub-btn:active {
+  transform: scale(0.95);
+}
+
+.edit-btn {
+  background: #e67e00;
+  color: #fff;
+}
+
+.edit-btn:hover {
+  background: #ff9500;
+}
+
+.publish-btn {
+  background: #1a7a1a;
+  color: #fff;
+}
+
+.publish-btn:hover:not(:disabled) {
+  background: #22aa22;
+}
+
+.publish-btn:disabled {
+  background: #333;
+  color: #666;
+  cursor: not-allowed;
+}
+
+/* ── Inline Link Input ── */
+.link-input {
+  width: 100%;
+  padding: 6px 8px;
+  border-radius: 5px;
+  border: 1px solid #555;
+  background: #111;
+  color: #eee;
+  font-size: 11px;
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.2s;
+}
+
+.link-input:focus {
+  border-color: #e67e00;
+}
     </style>
     
     <main>
@@ -173,9 +308,57 @@
         <div class="shape shape-b"></div>
       </div>
       <div class="content">
-        <p class="eyebrow">Chapter II</p>
-        <h1 class="headline">Section Two</h1>
-        <p class="sub">Background, shapes, and text shift at different depths — creating real visual motion.</p>
+<!--300-->
+<div class="slots-container">
+  
+  <div class="slot-1" id="slot-1">
+            <img id="img-1" class="preview-1" src="">
+ <div class="main-btn-wrap" id="wrap-1">
+      <button class="main-btn" id="main-btn-1" onclick="handleMainBtn(1)">Button 1</button>
+      <div class="sub-btns">
+        <button class="sub-btn edit-btn" onclick="startEdit(1)">Edit</button>
+        <button class="sub-btn publish-btn" id="pub-btn-1" onclick="publishLink(1)" disabled>Publish</button>
+      </div>
+      <input class="link-input" id="link-input-1" type="url" placeholder="Paste link..." style="display:none">
+    </div>
+        </div>
+        <div class="slot-2" id="slot-2">
+            <img id="img-2" class="preview-2" src="">
+ <div class="main-btn-wrap" id="wrap-2">
+      <button class="main-btn" id="main-btn-2" onclick="handleMainBtn(2)">Button 2</button>
+      <!--edit-->
+      <div class="sub-btns">
+        <button class="sub-btn edit-btn" onclick="startEdit(2)">Edit</button>
+        <button class="sub-btn publish-btn" id="pub-btn-2" onclick="publishLink(2)" disabled>Publish</button>
+      </div>
+      <input class="link-input" id="link-input-2" type="url" placeholder="Paste link..." style="display:none">
+    </div>
+        </div>
+            <!--publish-->
+        <div class="slot-3" id="slot-3">
+            <img id="img-3" class="preview-3" src="">
+ <div class="main-btn-wrap" id="wrap-3">
+      <button class="main-btn" id="main-btn-3" onclick="handleMainBtn(3)">Button 3</button>
+      <div class="sub-btns">
+        <button class="sub-btn edit-btn" onclick="startEdit(3)">Edit</button>
+        <button class="sub-btn publish-btn" id="pub-btn-3" onclick="publishLink(3)" disabled>Publish</button>
+      </div>
+      <input class="link-input" id="link-input-3" type="url" placeholder="Paste link..." style="display:none">
+    </div>
+        </div>
+        <div class="slot-4" id="slot-4">
+            <img id="img-4" class="preview-4" src="">
+   <div class="main-btn-wrap" id="wrap-4">
+      <button class="main-btn" id="main-btn-4" onclick="handleMainBtn(4)">Button 4</button>
+      <div class="sub-btns">
+        <button class="sub-btn edit-btn" onclick="startEdit(4)">Edit</button>
+        <button class="sub-btn publish-btn" id="pub-btn-4" onclick="publishLink(4)" disabled>Publish</button>
+      </div>
+      <input class="link-input" id="link-input-4" type="url" placeholder="Paste link..." style="display:none">
+    </div>
+        </div>
+</div>
+
       </div>
     </div>
 
@@ -187,9 +370,55 @@
         <div class="shape shape-b"></div>
       </div>
       <div class="content">
-        <p class="eyebrow">Chapter III</p>
-        <h1 class="headline">Section Three</h1>
-        <p class="sub">Swipe up or down, scroll, or click the dots — everything stays in sync.</p>
+<!--400-->
+
+<div class="slots-container">
+ <div class="slot-5" id="slot-5">
+            <img id="img-5" class="preview-5" src="">
+ <div class="main-btn-wrap" id="wrap-5">
+      <button class="main-btn" id="main-btn-5" onclick="handleMainBtn(5)">Button 5</button>
+      <div class="sub-btns">
+        <button class="sub-btn edit-btn" onclick="startEdit(5)">Edit</button>
+        <button class="sub-btn publish-btn" id="pub-btn-5" onclick="publishLink(5)" disabled>Publish</button>
+      </div>
+      <input class="link-input" id="link-input-5" type="url" placeholder="Paste link..." style="display:none">
+    </div>
+        </div>
+        <div class="slot-6" id="slot-6">
+            <img id="img-6" class="preview-6" src="">
+  <div class="main-btn-wrap" id="wrap-6">
+      <button class="main-btn" id="main-btn-6" onclick="handleMainBtn(6)">Button 6</button>
+      <div class="sub-btns">
+        <button class="sub-btn edit-btn" onclick="startEdit(6)">Edit</button>
+        <button class="sub-btn publish-btn" id="pub-btn-6" onclick="publishLink(6)" disabled>Publish</button>
+      </div>
+      <input class="link-input" id="link-input-6" type="url" placeholder="Paste link..." style="display:none">
+    </div>
+        </div>
+        <div class="slot-7" id="slot-7">
+            <img id="img-7" class="preview-7" src="">
+   <div class="main-btn-wrap" id="wrap-7">
+      <button class="main-btn" id="main-btn-7" onclick="handleMainBtn(7)">Button 7</button>
+      <div class="sub-btns">
+        <button class="sub-btn edit-btn" onclick="startEdit(7)">Edit</button>
+        <button class="sub-btn publish-btn" id="pub-btn-7" onclick="publishLink(7)" disabled>Publish</button>
+      </div>
+      <input class="link-input" id="link-input-7" type="url" placeholder="Paste link..." style="display:none">
+    </div>
+        </div>
+        <div class="slot-8" id="slot-8">
+            <img id="img-8" class="preview-8" src="">
+   <div class="main-btn-wrap" id="wrap-8">
+      <button class="main-btn" id="main-btn-8" onclick="handleMainBtn(8)">Button 8</button>
+      <div class="sub-btns">
+        <button class="sub-btn edit-btn" onclick="startEdit(8)">Edit</button>
+        <button class="sub-btn publish-btn" id="pub-btn-8" onclick="publishLink(8)" disabled>Publish</button>
+      </div>
+      <input class="link-input" id="link-input-8" type="url" placeholder="Paste link..." style="display:none">
+    </div>
+        </div>
+</div>
+
       </div>
     </div>
 
@@ -214,6 +443,10 @@
     <div id="protected-section" class="hidden">
         <h1>Welcome!</h1>
         <p>You are now inside the protected zone.</p>
+        
+        <div class="image-grid">
+          <div class="upload-card">
+          
         <div class="uploader">
   <input type="file" id="videoInput" accept="video/*">
 
@@ -226,6 +459,59 @@
   <div id="upload-status"></div>
   <div id="speed-status"></div>
 </div>
+
+<!--500-->
+<p>1</p>
+            <input type="file" id="file-1" accept="image/*"><br>
+            <button onclick="upload(1)">Upload</button>
+            <button onclick="remove(1)">Delete</button>
+<p>2</p>
+            <input type="file" id="file-2" accept="image/*"><br>
+            <button onclick="upload(2)">Upload</button>
+            <button onclick="remove(2)">Delete</button>
+<p>3</p>
+            <input type="file" id="file-3" accept="image/*"><br>
+            <button onclick="upload(3)">Upload</button>
+            <button onclick="remove(3)">Delete</button>
+<p>4</p>
+            <input type="file" id="file-4" accept="image/*"><br>
+            <button onclick="upload(4)">Upload</button>
+            <button onclick="remove(4)">Delete</button>
+<p>5</p>
+            <input type="file" id="file-5" accept="image/*"><br>
+            <button onclick="upload(5)">Upload</button>
+            <button onclick="remove(5)">Delete</button>
+<p>6</p>
+            <input type="file" id="file-6" accept="image/*"><br>
+            <button onclick="upload(6)">Upload</button>
+            <button onclick="remove(6)">Delete</button>
+<p>7</p>
+            <input type="file" id="file-7" accept="image/*"><br>
+            <button onclick="upload(7)">Upload</button>
+            <button onclick="remove(7)">Delete</button>
+<p>8</p>
+            <input type="file" id="file-8" accept="image/*"><br>
+            <button onclick="upload(8)">Upload</button>
+            <button onclick="remove(8)">Delete</button>
+            
+            <p>01</p>
+            
+            <p>02</p>
+            
+            <p>03</p>
+            
+            <p>04</p>
+            
+            <p>05</p>
+            
+            <p>06</p>
+            
+            <p>07</p>
+            
+            <p>08</p>
+            
+            
+</div></div>
 
 
         <button onclick="logout()">Logout</button>
@@ -511,14 +797,11 @@ function xhrUpload(url, file, onProgress){
 
     xhr.onerror = () => reject(new Error("Network error"));
 
-    xhr.open("POST", url);
-    xhr.setRequestHeader("Authorization", `Bearer ${SUPABASE_ANON_KEY}`);
-    xhr.setRequestHeader("x-upsert", "true");
-
-
-    const formData = new FormData();
-formData.append("file", file);
-xhr.send(formData);
+xhr.open("POST", url);
+xhr.setRequestHeader("Authorization", `Bearer ${SUPABASE_ANON_KEY}`);
+xhr.setRequestHeader("Content-Type", file.type);
+xhr.setRequestHeader("x-upsert", "true");
+xhr.send(file);
   });
 }
 
@@ -606,7 +889,160 @@ async function deleteCurrentVideo(){
 
 window.addEventListener("load", loadLatestVideo);
 
+//Spencer 
+     // Renamed variable to 'supabaseClient' to avoid conflict with the library name
+        
 
+        async function upload(id) {
+  const file = document.getElementById(`file-${id}`).files[0];
+  if (!file) return alert("Choose a file first");
+
+  const ext = file.name.split('.').pop();
+  const path = `images/slot-${id}.${ext}`;
+  const url = `${SUPABASE_URL}/storage/v1/object/${BUCKET_NAME}/${path}`;
+
+  const res = await fetch(url, {
+    method: "POST",
+    headers: {
+      "Authorization": `Bearer ${SUPABASE_ANON_KEY}`,
+      "Content-Type": file.type,
+      "x-upsert": "true"
+    },
+    body: file
+  });
+
+  if (!res.ok) return alert("Upload failed: " + await res.text());
+
+  const { data } = sb.storage.from(BUCKET_NAME).getPublicUrl(path);
+  document.getElementById(`img-${id}`).src = data.publicUrl + "?t=" + Date.now();
+  alert("Uploaded!");
+}
+
+async function remove(id) {
+  const path = `images/slot-${id}.jpg`;
+  const { error } = await sb.storage.from(BUCKET_NAME).remove([path]);
+  if (error) return alert("Delete failed: " + error.message);
+  document.getElementById(`img-${id}`).src = "";
+  alert("Deleted!");
+}
+
+window.addEventListener("load", () => {
+  for (let i = 1; i <= 8; i++) {
+    const path = `images/slot-${i}.jpg`;
+    const { data } = sb.storage.from(BUCKET_NAME).getPublicUrl(path);
+    document.getElementById(`img-${i}`).src = data.publicUrl + "?t=" + Date.now();
+  }
+});
+
+/* ══════════════════════════════════════════
+   BUTTON LINKS — Appwrite Persistence
+   Collection: "button_links"
+   Document ID per slot: "slot-N"
+   Attributes: link (string), label (string)
+   ══════════════════════════════════════════ */
+
+const { Databases, ID, Query } = Appwrite;
+const db = new Databases(client);
+
+const DB_ID  = "69f8cf700011c9d07ca1";          // ← your Appwrite Database ID
+const COL_ID = "links";     // ← your Appwrite Collection ID
+
+// In-memory store: slot number → { link, docId }
+const slotState = {};
+
+/* ── Load all saved links on page load ── */
+async function loadAllLinks() {
+  try {
+    const res = await db.listDocuments(DB_ID, COL_ID);
+    res.documents.forEach(doc => {
+      const n = doc.slot;
+      slotState[n] = { link: doc.link, docId: doc.$id };
+      applyLink(n, doc.link);
+    });
+  } catch(e) {
+    console.warn("Could not load button links:", e.message);
+  }
+}
+
+/* ── Apply a saved link to the button visually ── */
+function applyLink(n, link) {
+  const btn   = document.getElementById(`main-btn-${n}`);
+  const input = document.getElementById(`link-input-${n}`);
+
+  if (link) {
+    btn.textContent = link.length > 28 ? link.slice(0, 26) + "…" : link;
+    btn.classList.add("has-link");
+    btn.title = link;
+  } else {
+    btn.textContent = `Button ${n}`;
+    btn.classList.remove("has-link");
+    btn.title = "";
+  }
+
+  input.style.display = "none";
+  document.getElementById(`pub-btn-${n}`).disabled = true;
+}
+
+/* ── EDIT: show input field ── */
+function startEdit(n) {
+  const input  = document.getElementById(`link-input-${n}`);
+  const pubBtn = document.getElementById(`pub-btn-${n}`);
+
+  input.style.display = "block";
+  input.value = slotState[n]?.link || "";
+  input.focus();
+  pubBtn.disabled = false;
+
+  // Enable publish on typing
+  input.oninput = () => {
+    pubBtn.disabled = input.value.trim() === "";
+  };
+}
+
+/* ── PUBLISH: save to Appwrite ── */
+async function publishLink(n) {
+  const input  = document.getElementById(`link-input-${n}`);
+  const pubBtn = document.getElementById(`pub-btn-${n}`);
+  const link   = input.value.trim();
+
+  if (!link) return;
+
+  pubBtn.textContent = "Saving…";
+  pubBtn.disabled = true;
+
+  try {
+    const existing = slotState[n];
+
+    if (existing?.docId) {
+      // Update existing document
+      await db.updateDocument(DB_ID, COL_ID, existing.docId, { link, slot: n });
+      slotState[n].link = link;
+    } else {
+      // Create new document
+      const doc = await db.createDocument(DB_ID, COL_ID, ID.unique(), { link, slot: n });
+      slotState[n] = { link, docId: doc.$id };
+    }
+
+    applyLink(n, link);
+
+  } catch(e) {
+    alert("Save failed: " + e.message);
+    pubBtn.disabled = false;
+  }
+
+  pubBtn.textContent = "Publish";
+}
+
+/* ── Main button click: open the link ── */
+function handleMainBtn(n) {
+  const link = slotState[n]?.link;
+  if (link) {
+    window.open(link, "_blank");
+  }
+}
+
+/* ── Init ── */
+window.addEventListener("load", loadAllLinks);
     </script>
   </body>
-  </html>
+</html>
