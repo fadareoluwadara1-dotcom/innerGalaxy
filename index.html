@@ -61,7 +61,7 @@
  pointer-events: all; }
         input { display: block; width: 100%; margin: 10px 0; padding: 8px; }
         button { background: black; color: white; border: none; padding: 10px; width: 100%; cursor: pointer; }
-        .hidden { display: none; }
+.hidden { display: none !important; }
 
 .bg video{
   position:absolute;
@@ -823,7 +823,7 @@
 
     try {
         // Clear any existing session first
-        try { await account.deleteSession('current'); } catch(e) {}
+
         
         await account.createEmailPasswordSession(email, password);
         showProtected();
@@ -844,9 +844,13 @@ window.addEventListener("load", async () => {
     }
 
     async function logout() {
-        await account.deleteSession('current');
-        location.reload(); // Reset page
-    }
+  try {
+    await account.deleteSession('current');
+  } catch(e) {
+    console.warn("No active session:", e.message);
+  }
+  location.reload();
+}
     
     const SUPABASE_URL = "https://kvozhxngadxebclfpcpx.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt2b3poeG5nYWR4ZWJjbGZwY3B4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwODIwNDQsImV4cCI6MjA5NjY1ODA0NH0.861nCCV3sCj3uu6UIN0lCXQYE5-cWn5agSjfxU7OJNc";
