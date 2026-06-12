@@ -268,6 +268,93 @@
 .link-input:focus {
   border-color: #e67e00;
 }
+/* MAIN CONTAINER */
+#protected-section{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    width:100%;
+}
+
+/* CENTER EVERYTHING */
+.upload-card{
+    width:100%;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+}
+
+/* GRID LAYOUT */
+.image-grid{
+    width:100%;
+    max-width:1000px;
+    margin:auto;
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+    gap:12px;
+    justify-items:center;
+    align-items:start;
+}
+
+/* SMALL FILE INPUTS */
+.image-grid input[type="file"]{
+    width:130px;
+    font-size:11px;
+}
+
+/* SMALL BUTTONS */
+.image-grid button,
+.sub-btn{
+    width:130px;
+    height:32px;
+    font-size:12px;
+    margin:2px 0;
+}
+
+/* NUMBERS */
+.image-grid p{
+    margin:4px 0;
+    text-align:center;
+    font-size:12px;
+}
+
+/* VIDEO UPLOADER */
+.uploader{
+    width:100%;
+    max-width:300px;
+    margin:0 auto 20px;
+    text-align:center;
+}
+
+/* BUTTON ROW */
+.btn-row{
+    display:flex;
+    justify-content:center;
+    gap:6px;
+    flex-wrap:wrap;
+}
+
+/* EDIT/PUBLISH */
+.sub-btns{
+    display:flex;
+    justify-content:center;
+    gap:5px;
+    flex-wrap:wrap;
+}
+
+/* MOBILE */
+@media (max-width:600px){
+    .image-grid{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .image-grid input[type="file"],
+    .image-grid button,
+    .sub-btn{
+        width:110px;
+        font-size:11px;
+    }
+}
     </style>
     
     <main>
@@ -315,10 +402,7 @@
             <img id="img-1" class="preview-1" src="">
  <div class="main-btn-wrap" id="wrap-1">
       <button class="main-btn" id="main-btn-1" onclick="handleMainBtn(1)">Button 1</button>
-      <div class="sub-btns">
-        <button class="sub-btn edit-btn" onclick="startEdit(1)">Edit</button>
-        <button class="sub-btn publish-btn" id="pub-btn-1" onclick="publishLink(1)" disabled>Publish</button>
-      </div>
+
       <input class="link-input" id="link-input-1" type="url" placeholder="Paste link..." style="display:none">
     </div>
         </div>
@@ -327,10 +411,7 @@
  <div class="main-btn-wrap" id="wrap-2">
       <button class="main-btn" id="main-btn-2" onclick="handleMainBtn(2)">Button 2</button>
       <!--edit-->
-      <div class="sub-btns">
-        <button class="sub-btn edit-btn" onclick="startEdit(2)">Edit</button>
-        <button class="sub-btn publish-btn" id="pub-btn-2" onclick="publishLink(2)" disabled>Publish</button>
-      </div>
+
       <input class="link-input" id="link-input-2" type="url" placeholder="Paste link..." style="display:none">
     </div>
         </div>
@@ -339,10 +420,7 @@
             <img id="img-3" class="preview-3" src="">
  <div class="main-btn-wrap" id="wrap-3">
       <button class="main-btn" id="main-btn-3" onclick="handleMainBtn(3)">Button 3</button>
-      <div class="sub-btns">
-        <button class="sub-btn edit-btn" onclick="startEdit(3)">Edit</button>
-        <button class="sub-btn publish-btn" id="pub-btn-3" onclick="publishLink(3)" disabled>Publish</button>
-      </div>
+
       <input class="link-input" id="link-input-3" type="url" placeholder="Paste link..." style="display:none">
     </div>
         </div>
@@ -350,10 +428,7 @@
             <img id="img-4" class="preview-4" src="">
    <div class="main-btn-wrap" id="wrap-4">
       <button class="main-btn" id="main-btn-4" onclick="handleMainBtn(4)">Button 4</button>
-      <div class="sub-btns">
-        <button class="sub-btn edit-btn" onclick="startEdit(4)">Edit</button>
-        <button class="sub-btn publish-btn" id="pub-btn-4" onclick="publishLink(4)" disabled>Publish</button>
-      </div>
+
       <input class="link-input" id="link-input-4" type="url" placeholder="Paste link..." style="display:none">
     </div>
         </div>
@@ -377,10 +452,7 @@
             <img id="img-5" class="preview-5" src="">
  <div class="main-btn-wrap" id="wrap-5">
       <button class="main-btn" id="main-btn-5" onclick="handleMainBtn(5)">Button 5</button>
-      <div class="sub-btns">
-        <button class="sub-btn edit-btn" onclick="startEdit(5)">Edit</button>
-        <button class="sub-btn publish-btn" id="pub-btn-5" onclick="publishLink(5)" disabled>Publish</button>
-      </div>
+
       <input class="link-input" id="link-input-5" type="url" placeholder="Paste link..." style="display:none">
     </div>
         </div>
@@ -388,10 +460,7 @@
             <img id="img-6" class="preview-6" src="">
   <div class="main-btn-wrap" id="wrap-6">
       <button class="main-btn" id="main-btn-6" onclick="handleMainBtn(6)">Button 6</button>
-      <div class="sub-btns">
-        <button class="sub-btn edit-btn" onclick="startEdit(6)">Edit</button>
-        <button class="sub-btn publish-btn" id="pub-btn-6" onclick="publishLink(6)" disabled>Publish</button>
-      </div>
+
       <input class="link-input" id="link-input-6" type="url" placeholder="Paste link..." style="display:none">
     </div>
         </div>
@@ -399,10 +468,7 @@
             <img id="img-7" class="preview-7" src="">
    <div class="main-btn-wrap" id="wrap-7">
       <button class="main-btn" id="main-btn-7" onclick="handleMainBtn(7)">Button 7</button>
-      <div class="sub-btns">
-        <button class="sub-btn edit-btn" onclick="startEdit(7)">Edit</button>
-        <button class="sub-btn publish-btn" id="pub-btn-7" onclick="publishLink(7)" disabled>Publish</button>
-      </div>
+
       <input class="link-input" id="link-input-7" type="url" placeholder="Paste link..." style="display:none">
     </div>
         </div>
@@ -410,10 +476,7 @@
             <img id="img-8" class="preview-8" src="">
    <div class="main-btn-wrap" id="wrap-8">
       <button class="main-btn" id="main-btn-8" onclick="handleMainBtn(8)">Button 8</button>
-      <div class="sub-btns">
-        <button class="sub-btn edit-btn" onclick="startEdit(8)">Edit</button>
-        <button class="sub-btn publish-btn" id="pub-btn-8" onclick="publishLink(8)" disabled>Publish</button>
-      </div>
+
       <input class="link-input" id="link-input-8" type="url" placeholder="Paste link..." style="display:none">
     </div>
         </div>
@@ -495,21 +558,45 @@
             <button onclick="remove(8)">Delete</button>
             
             <p>01</p>
-            
+                  <div class="sub-btns">
+        <button class="sub-btn edit-btn" onclick="startEdit(1)">Edit</button>
+        <button class="sub-btn publish-btn" id="pub-btn-1" onclick="publishLink(1)" disabled>Publish</button>
+      </div>
             <p>02</p>
-            
+                  <div class="sub-btns">
+        <button class="sub-btn edit-btn" onclick="startEdit(2)">Edit</button>
+        <button class="sub-btn publish-btn" id="pub-btn-2" onclick="publishLink(2)" disabled>Publish</button>
+      </div>
             <p>03</p>
-            
+                  <div class="sub-btns">
+        <button class="sub-btn edit-btn" onclick="startEdit(3)">Edit</button>
+        <button class="sub-btn publish-btn" id="pub-btn-3" onclick="publishLink(3)" disabled>Publish</button>
+      </div>
             <p>04</p>
-            
+                  <div class="sub-btns">
+        <button class="sub-btn edit-btn" onclick="startEdit(4)">Edit</button>
+        <button class="sub-btn publish-btn" id="pub-btn-4" onclick="publishLink(4)" disabled>Publish</button>
+      </div>
             <p>05</p>
-            
+                  <div class="sub-btns">
+        <button class="sub-btn edit-btn" onclick="startEdit(5)">Edit</button>
+        <button class="sub-btn publish-btn" id="pub-btn-5" onclick="publishLink(5)" disabled>Publish</button>
+      </div>
             <p>06</p>
-            
+                  <div class="sub-btns">
+        <button class="sub-btn edit-btn" onclick="startEdit(6)">Edit</button>
+        <button class="sub-btn publish-btn" id="pub-btn-6" onclick="publishLink(6)" disabled>Publish</button>
+      </div>
             <p>07</p>
-            
+                  <div class="sub-btns">
+        <button class="sub-btn edit-btn" onclick="startEdit(7)">Edit</button>
+        <button class="sub-btn publish-btn" id="pub-btn-7" onclick="publishLink(7)" disabled>Publish</button>
+      </div>
             <p>08</p>
-            
+                  <div class="sub-btns">
+        <button class="sub-btn edit-btn" onclick="startEdit(8)">Edit</button>
+        <button class="sub-btn publish-btn" id="pub-btn-8" onclick="publishLink(8)" disabled>Publish</button>
+      </div>
             
 </div></div>
 
