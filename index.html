@@ -355,9 +355,20 @@
         font-size:11px;
     }
 }
+#language-switcher {
+  padding: 8px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
     </style>
     
     <main>
+      <select id="language-switcher">
+  <option value="en">English</option>
+  <option value="fr">French</option>
+  <option value="ja">Japanese</option>
+</select>
       <div id="container">
   <div id="track">
 
@@ -1130,6 +1141,147 @@ function handleMainBtn(n) {
 
 /* ── Init ── */
 window.addEventListener("load", loadAllLinks);
+
+/* ══════════════════════════════════════════
+   LANGUAGE SWITCHER
+   Covers all static text in the page.
+   ══════════════════════════════════════════ */
+
+const translations = {
+  en: {
+    welcome:       "Welcome",
+    sectionOne:    "Section One",
+    headline:      "I am determined to help you make your activities more productive with Tech.",
+    subText:       "A strong parallax experience — each layer moves at its own pace as you swipe or scroll.",
+    finale:        "Finale",
+    loginTitle:    "Login",
+    emailPh:       "Email",
+    passwordPh:    "Password",
+    enterBtn:      "Enter",
+    welcomeMsg:    "Welcome!",
+    protectedMsg:  "You are now inside the protected zone.",
+    logoutBtn:     "Logout",
+    uploadVideo:   "Upload Video",
+    deleteVideo:   "Delete Current",
+    hint:          "Scroll",
+    buttons:       ["Button 1","Button 2","Button 3","Button 4","Button 5","Button 6","Button 7","Button 8"],
+    upload:        "Upload",
+    delete:        "Delete",
+    edit:          "Edit",
+    publish:       "Publish",
+    pasteLinkPh:   "Paste link...",
+  },
+  fr: {
+    welcome:       "Bienvenue",
+    sectionOne:    "Section Un",
+    headline:      "Je suis déterminé à vous aider à rendre vos activités plus productives grâce à la technologie.",
+    subText:       "Une expérience parallaxe puissante — chaque couche se déplace à son propre rythme.",
+    finale:        "Finale",
+    loginTitle:    "Connexion",
+    emailPh:       "E-mail",
+    passwordPh:    "Mot de passe",
+    enterBtn:      "Entrer",
+    welcomeMsg:    "Bienvenue !",
+    protectedMsg:  "Vous êtes maintenant dans la zone protégée.",
+    logoutBtn:     "Déconnexion",
+    uploadVideo:   "Téléverser la vidéo",
+    deleteVideo:   "Supprimer la vidéo",
+    hint:          "Défiler",
+    buttons:       ["Bouton 1","Bouton 2","Bouton 3","Bouton 4","Bouton 5","Bouton 6","Bouton 7","Bouton 8"],
+    upload:        "Téléverser",
+    delete:        "Supprimer",
+    edit:          "Modifier",
+    publish:       "Publier",
+    pasteLinkPh:   "Coller le lien...",
+  },
+  ja: {
+    welcome:       "ようこそ",
+    sectionOne:    "セクション1",
+    headline:      "テクノロジーであなたの活動をより生産的にするお手伝いをします。",
+    subText:       "強力なパララックス体験 — スワイプするたびに各レイヤーが独自のペースで動きます。",
+    finale:        "フィナーレ",
+    loginTitle:    "ログイン",
+    emailPh:       "メールアドレス",
+    passwordPh:    "パスワード",
+    enterBtn:      "入る",
+    welcomeMsg:    "ようこそ！",
+    protectedMsg:  "保護されたゾーンに入りました。",
+    logoutBtn:     "ログアウト",
+    uploadVideo:   "動画をアップロード",
+    deleteVideo:   "現在の動画を削除",
+    hint:          "スクロール",
+    buttons:       ["ボタン1","ボタン2","ボタン3","ボタン4","ボタン5","ボタン6","ボタン7","ボタン8"],
+    upload:        "アップロード",
+    delete:        "削除",
+    edit:          "編集",
+    publish:       "公開",
+    pasteLinkPh:   "リンクを貼り付け...",
+  }
+};
+
+function applyLanguage(lang) {
+  const t = translations[lang] || translations.en;
+
+  // Slide 1
+  document.querySelector('.slide-1 .eyebrow').textContent     = t.welcome;
+  document.querySelector('.slide-1 .headline').textContent    = t.sectionOne;
+  document.querySelector('.slide-1 h2').textContent           = t.headline;
+  document.querySelector('.slide-1 .sub').textContent         = t.subText;
+
+  // Slide 4 eyebrow
+  document.querySelector('.slide-4 .eyebrow').textContent     = t.finale;
+
+  // Auth section
+  document.querySelector('#auth-section h2').textContent      = t.loginTitle;
+  document.getElementById('email').placeholder                = t.emailPh;
+  document.getElementById('password').placeholder             = t.passwordPh;
+  document.querySelector('#auth-section button').textContent  = t.enterBtn;
+
+  // Protected section
+  document.querySelector('#protected-section h1').textContent = t.welcomeMsg;
+  document.querySelector('#protected-section > p').textContent = t.protectedMsg;
+  document.querySelector('#protected-section > button').textContent = t.logoutBtn;
+
+  // Video uploader buttons
+  document.getElementById('uploadBtn').textContent            = t.uploadVideo;
+  document.getElementById('deleteBtn').textContent            = t.deleteVideo;
+
+  // Hint
+  document.querySelector('#hint span').textContent            = t.hint;
+
+  // Main buttons (1–8) — only update those not already showing a saved link
+  for (let n = 1; n <= 8; n++) {
+    const btn = document.getElementById(`main-btn-${n}`);
+    if (!slotState[n]?.link) {
+      btn.textContent = t.buttons[n - 1];
+    }
+    document.getElementById(`link-input-${n}`).placeholder   = t.pasteLinkPh;
+  }
+
+  // Upload/Delete buttons inside the admin panel
+  for (let i = 1; i <= 8; i++) {
+    const card = document.getElementById(`file-${i}`)?.parentElement;
+    if (!card) continue;
+    const btns = card.querySelectorAll('button');
+    if (btns[0]) btns[0].textContent = t.upload;
+    if (btns[1]) btns[1].textContent = t.delete;
+  }
+
+  // Edit / Publish sub-buttons
+  document.querySelectorAll('.edit-btn').forEach(b  => b.textContent = t.edit);
+  document.querySelectorAll('.publish-btn').forEach(b => {
+    if (b.textContent !== "Saving…") b.textContent = t.publish;
+  });
+}
+
+// Wire up the selector
+document.getElementById('language-switcher').addEventListener('change', function() {
+  applyLanguage(this.value);
+});
+
+// Apply default language on load
+window.addEventListener('load', () => applyLanguage('en'));
+
     </script>
   </body>
 </html>
