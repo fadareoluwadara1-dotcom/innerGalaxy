@@ -149,6 +149,18 @@
       <div class="content">
         <p class="eyebrow">Welcome</p>
         <h1 class="headline">Section One</h1>
+<h2 style="
+    color: #003366; 
+    font-family: Arial, sans-serif; 
+    font-size: 28px; 
+    line-height: 1.4; 
+    letter-spacing: 0.5px; 
+    font-weight: 700;
+    margin-bottom: 20px;
+">
+    I am determined to help you make your activities more productive with Tech.
+</h2>
+
         <p class="sub">A strong parallax experience — each layer moves at its own pace as you swipe or scroll.</p>
       </div>
     </div>
@@ -368,16 +380,25 @@
     const account = new Account(client);
 
     async function login() {
-        const email = document.getElementById('email').value;
-        const password = document.getElementById('password').value;
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
 
-        try {
-            await account.createEmailPasswordSession(email, password);
-            showProtected();
-        } catch (error) {
-            alert("Not assigned: " + error.message);
-        }
+    try {
+        // Clear any existing session first
+        try { await account.deleteSession('current'); } catch(e) {}
+        
+        await account.createEmailPasswordSession(email, password);
+        showProtected();
+    } catch (error) {
+        alert("Not assigned: " + error.message);
     }
+}
+window.addEventListener("load", async () => {
+    try {
+        await account.get(); // throws if not logged in
+        showProtected();     // already logged in, skip the form
+    } catch(e) {}
+});
 
     function showProtected() {
         document.getElementById('auth-section').classList.add('hidden');
@@ -490,12 +511,14 @@ function xhrUpload(url, file, onProgress){
 
     xhr.onerror = () => reject(new Error("Network error"));
 
-    xhr.open("PUT", url);
+    xhr.open("POST", url);
     xhr.setRequestHeader("Authorization", `Bearer ${SUPABASE_ANON_KEY}`);
     xhr.setRequestHeader("x-upsert", "true");
-    xhr.setRequestHeader("Content-Type", file.type || "video/mp4");
 
-    xhr.send(file);
+
+    const formData = new FormData();
+formData.append("file", file);
+xhr.send(formData);
   });
 }
 
@@ -586,4 +609,4 @@ window.addEventListener("load", loadLatestVideo);
 
     </script>
   </body>
-    </html>
+  </html>
